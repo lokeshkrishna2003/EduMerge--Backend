@@ -25,13 +25,29 @@ app.get("/", (req, res) => {
 
 app.post("/register", async (req, res) => {
   try {
+    const { username, email, password } = req.body;
+
+    // Check if the email or username already exists
+    const existingUser = await User.findOne({
+      $or: [{ username }, { email }]
+    });
+
+    if (existingUser) {
+      if (existingUser.username === username) {
+        return res.status(400).send("Username already exists");
+      }
+      if (existingUser.email === email) {
+        return res.status(400).send("Email already exists");
+      }
+    }
+
     // Hash the password
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create a new user with username, email, and hashed password
     const newUser = new User({
-      username: req.body.username,
-      email: req.body.email,
+      username,
+      email,
       password: hashedPassword,
     });
 
@@ -39,7 +55,7 @@ app.post("/register", async (req, res) => {
     await newUser.save();
     res.status(201).send("User registered successfully");
   } catch (error) {
-    console.error(error); // Log the complete error
+    console.error(error);
     res.status(500).send("An error occurred while registering the user.");
   }
 });
@@ -48,21 +64,16 @@ app.post("/login", async (req, res) => {
   try {
     // Find the user by username or email
     const user = await User.findOne({
-      $or: [{ username: req.body.username }, { email: req.body.username }],
+      $or: [{ username: req.body.username }, { email: req.body.username }]
     });
-    if (!user) {
-      return res.status(400).send("User not found");
-    }
 
-    // Check the password
-    const isMatch = await bcrypt.compare(req.body.password, user.password);
-    if (!isMatch) {
-      return res.status(400).send("Invalid credentials");
+    if (!user || !(await bcrypt.compare(req.body.password, user.password))) {
+      return res.status(400).send("Invalid username or password");
     }
 
     res.status(200).send("User logged in successfully");
   } catch (error) {
-    res.status(500).send(error.message);
+    res.status(500).send("An error occurred during login");
   }
 });
 
