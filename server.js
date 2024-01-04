@@ -54,7 +54,8 @@ app.post("/register", async (req, res) => {
 
     // Save the user
     await newUser.save();
-    res.status(201).json({ message: "User registered successfully", userId: savedUser._id });
+    res.status(201).json({ message: "User registered successfully", userId: newUser._id });
+
   } catch (error) {
     console.error(error);
     res.status(500).send("An error occurred while registering the user.");

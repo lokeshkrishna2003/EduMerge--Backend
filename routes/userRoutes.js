@@ -6,15 +6,17 @@ const bcrypt = require('bcrypt');
 // Get User Data by ID
 router.get("/:userId", async (req, res) => {
     try {
-        const user = await User.findById(req.params.userId);
+        const userId = req.params.userId;
+        const user = await User.findById(userId).select('-password'); // Exclude password
+    
         if (!user) {
-            return res.status(404).send("User not found");
+          return res.status(404).send('User not found');
         }
-        res.json({ username: user.username, email: user.email }); // Send relevant user data
-    } catch (error) {
-        console.error(error);
-        res.status(500).send("An error occurred while fetching user data.");
-    }
+    
+        res.json(user);
+      } catch (error) {
+        res.status(500).send('Server error');
+      }
 });
 
 // Additional user-related routes (e.g., update, delete) can be added here
