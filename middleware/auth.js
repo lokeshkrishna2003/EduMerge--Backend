@@ -1,4 +1,6 @@
 const jwt = require('jsonwebtoken');
+const JWT_SECRET_KEY = require('crypto').randomBytes(64).toString('hex');
+
 
 const authenticateUser = (req, res, next) => {
   try {
@@ -8,7 +10,7 @@ const authenticateUser = (req, res, next) => {
       return res.status(401).json({ message: 'No token provided' });
     }
 
-    const decodedToken = jwt.verify(token,'mySuperSecretKey123!@#'); // Verifying the token
+    const decodedToken = jwt.verify(token,JWT_SECRET_KEY); // Verifying the token
     req.user = { userId: decodedToken.userId }; // Adding the user's ID to the request object
 
     next(); // Passing control to the next middleware or route handler
