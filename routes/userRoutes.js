@@ -64,7 +64,7 @@ router.put('/change-password/:userId',async (req, res) => {
 });
 
 // Delete user account
-router.delete('/delete-account', async (req, res) => {
+router.delete('/delete-account/:userId', async (req, res) => {
     try {
         const userId = req.params.userId;
         await User.findByIdAndDelete(userId);
@@ -75,3 +75,5 @@ router.delete('/delete-account', async (req, res) => {
 });
 
 module.exports = router;
+
+
