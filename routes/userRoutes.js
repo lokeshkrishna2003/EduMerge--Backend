@@ -156,6 +156,25 @@ router.delete('/delete-playlist/:playlistId', async (req, res) => {
   }
 });
 
+
+// GET route to fetch playlists for a user
+router.get('/playlists/:userId', authenticateUser, async (req, res) => {
+  try {
+      const { userId } = req.params;
+
+      // Find playlists by userId
+      const playlists = await Playlist.find({ userId: userId });
+      
+      if (!playlists) {
+          return res.status(404).send('No playlists found for this user');
+      }
+
+      res.status(200).json(playlists);
+  } catch (error) {
+      res.status(500).send(error.message);
+  }
+});
+
 module.exports = router;
 
 
