@@ -158,7 +158,7 @@ router.delete('/delete-playlist/:playlistId', async (req, res) => {
 
 
 // GET route to fetch playlists for a user
-router.get('/playlists/:userId', authenticateUser, async (req, res) => {
+router.get('/playlists/:userId', async (req, res) => {
   try {
       const { userId } = req.params;
 
