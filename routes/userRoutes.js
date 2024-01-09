@@ -109,27 +109,24 @@ router.put('/edit-playlist/:playlistId', async (req, res) => {
       const { playlistId } = req.params;
       const { playlistName, links } = req.body;
 
-      // Find the playlist by ID
-      const playlist = await Playlist.findById(playlistId);
+      // Find the playlist by ID and update
+      const playlist = await Playlist.findByIdAndUpdate(
+          playlistId,
+          { playlistName, links },
+          { new: true } // Returns the updated document
+      );
+
       if (!playlist) {
-          return res.status(404).send('Playlist not found');
+          return res.status(404).json({ message: 'Playlist not found' });
       }
-
-      // Optional: Check if the user is the owner of the playlist
-      if (playlist.userId.toString() !== req.user.id) { // Adjust based on your auth setup
-          return res.status(401).send('User not authorized to edit this playlist');
-      }
-
-      // Update the playlist
-      playlist.playlistName = playlistName;
-      playlist.links = links; // Assuming you want to replace the entire links array
-      await playlist.save();
 
       res.status(200).json({ message: 'Playlist updated successfully', playlist });
   } catch (error) {
-      res.status(500).send(error.message);
+      console.error('Error updating playlist:', error);
+      res.status(500).json({ message: 'Server error' });
   }
 });
+
 
 //delete playlist
 
@@ -153,6 +150,27 @@ router.delete('/delete-playlist/:playlistId', async (req, res) => {
       res.status(200).json({ message: 'Playlist deleted successfully' });
   } catch (error) {
       res.status(500).send(error.message);
+  }
+});
+
+// GET route to fetch a specific playlist by ID
+router.get('/playlist/:playlistId', async (req, res) => {
+  try {
+    const { playlistId } = req.params;
+    
+    // Find the playlist by its ID
+    const playlist = await Playlist.findById(playlistId);
+
+    if (!playlist) {
+      // If the playlist is not found, send a 404 response
+      return res.status(404).json({ message: 'Playlist not found' });
+    }
+
+    // If the playlist is found, send it back in the response
+    res.json(playlist);
+  } catch (error) {
+    // Handle any other errors
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
 
