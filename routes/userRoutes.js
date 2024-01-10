@@ -2,6 +2,9 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
 const Playlist = require('../models/Playlist');
+
+
+
 const bcrypt = require('bcrypt');
 const { authenticateUser } = require('../middleware/auth'); // Ensure the correct path
 // Get User Data by ID
@@ -21,9 +24,6 @@ router.get("/:userId", async (req, res) => {
 });
 
 // Update user profile
-
-
-
 router.put('/update-profile/:userId',async (req, res) => {
     try {
         const userId = req.params.userId;
@@ -37,8 +37,6 @@ router.put('/update-profile/:userId',async (req, res) => {
 });
 
 // Change password
-
-
 router.put('/change-password/:userId',async (req, res) => {
     try {
         const userId = req.params.userId;
@@ -181,7 +179,7 @@ router.get('/playlists/:userId', async (req, res) => {
       const { userId } = req.params;
 
       // Find playlists by userId
-      const playlists = await Playlist.find({ userId: userId });
+      const playlists = await Playlist.find({'userId': userId});
       
       if (!playlists) {
           return res.status(404).send('No playlists found for this user');
