@@ -132,19 +132,17 @@ router.delete('/delete-playlist/:playlistId', async (req, res) => {
   try {
       const { playlistId } = req.params;
 
-      // Find the playlist by ID
-      const playlist = await Playlist.findById(playlistId);
+      // Find the playlist by ID and delete
+      const playlist = await Playlist.findByIdAndDelete(playlistId);
       if (!playlist) {
           return res.status(404).send('Playlist not found');
       }
+      
 
-      // Optional: Check if the user is the owner of the playlist
-      if (playlist.userId.toString() !== req.user.id) { // Adjust based on your auth setup
-          return res.status(401).send('User not authorized to delete this playlist');
-      }
 
-      // Delete the playlist
-      await playlist.remove();
+
+      
+      
       res.status(200).json({ message: 'Playlist deleted successfully' });
   } catch (error) {
       res.status(500).send(error.message);
