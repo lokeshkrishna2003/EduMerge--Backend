@@ -54,8 +54,9 @@ app.post("/register", async (req, res) => {
 
     // Save the user
     await newUser.save();
-    res.status(201).json({ message: "User registered successfully", userId: newUser._id });
-
+    res
+      .status(201)
+      .json({ message: "User registered successfully", userId: newUser._id });
   } catch (error) {
     console.error(error);
     res.status(500).send("An error occurred while registering the user.");
@@ -73,14 +74,15 @@ app.post("/login", async (req, res) => {
       return res.status(400).send("Invalid username or password");
     }
 
-    res.status(200).json({ message: "User logged in successfully", userId: user._id });
-
+    res
+      .status(200)
+      .json({ message: "User logged in successfully", userId: user._id });
   } catch (error) {
     res.status(500).send("An error occurred during login");
   }
 });
 
-app.use('/user', userRoutes);
+app.use("/user", userRoutes);
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
