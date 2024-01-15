@@ -8,7 +8,7 @@ const app = express();
 const cors = require("cors");
 app.use(cors());
 app.use(express.json()); // Parse incoming JSON data
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 1000;
 const mongoURI =
   "mongodb+srv://Lokesh:or7ckwnacl8AXwly@cluster0.buupryn.mongodb.net/?retryWrites=true&w=majority";
 mongoose
